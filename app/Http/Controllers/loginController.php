@@ -80,7 +80,7 @@ class loginController extends Controller
                     echo "login successfully";
                 } 
                 else {
-                        $message = "Wrong email or password";
+                        $message = "Wrong OTP/password entered";
                        return view('login', compact('message'));
                     // return view('login');
                  }
@@ -88,7 +88,7 @@ class loginController extends Controller
             else
             {
                 // echo"password not valid";
-               $message = "Wrong email or password";
+               $message = "Email not registered";
                return view('login', compact('message'));
             }
         }

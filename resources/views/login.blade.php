@@ -47,7 +47,7 @@
                             <span class="input-group-text"><i class="fa fa-lock"></i></span>
                         </div>
 
-                        <input id="password" name="password" type="password" class="form-control  d-inline" placeholder="Password">
+                        <input id="password" name="password" type="password" class="form-control  d-inline" required placeholder="Password">
                         <button type="button" id="withOtp" href="" class="btn btn-xs btn-info mt-2 col-sm-3 d-inline" onclick="changePlaceholder();" value="">with OTP</button>
                     </div>
 
