@@ -47,7 +47,12 @@ class loginController extends Controller
      $email = $request->input('email');
      $otp = $request->input('password');
 
+     $updateStats = DB::table('otp_table')->where([
+                                ['status', '=', 'active'],
+                                ['expire_time', '<=', Carbon::now()]
+                                 ])->update(['status' => 'inactive']);
      $emailExists = \DB::table('users')->where('email', $email)->get();
+
      // dd($emailExists);
      if ($emailExists->isEmpty()) {
         $message = "Invalid credentials";
@@ -63,16 +68,7 @@ class loginController extends Controller
                 echo "login successfully";  
             }
             elseif($emailExists){
-
                 //for otp login
-                if(!($otpUser->expire_time >= Carbon::now()))
-                {
-                    $updateStatus =  DB::table('otp_table')
-                    ->where('user_id', '=', $email)
-                    ->where('otp', '=', $otp)
-                    ->update(['status' => 'inactive']);
-                }
-
                 if ($otpUser && $otpUser->otp == $otp && $otpUser->expire_time >= Carbon::now()) 
                 {
                     $updateStatus =  DB::table('otp_table')
@@ -103,5 +99,15 @@ class loginController extends Controller
            return view('login', compact('message'));
         }
 
+    }
+
+    public function expiredOtpStatus()
+    {
+        $OtpStatus = DB::table('otp_table')->where([
+            ['status', '=', 'active'],
+            ['expire_time', '<=', Carbon::now()]
+        ])->update(['status' => 'inactive']);
+
+        Log::info('Expired OTPs updated successfully');
     }
 }
