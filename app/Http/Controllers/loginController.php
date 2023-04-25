@@ -36,7 +36,7 @@ class loginController extends Controller
 
             return response()->json(['message' => 'OTP generated successfully']);
         }
-        return response()->json(['message' => 'Email not found']);
+        return response()->json(['message' => 'Email not registered']);
 
         
     }
@@ -48,8 +48,10 @@ class loginController extends Controller
      $otp = $request->input('password');
 
      $emailExists = \DB::table('users')->where('email', $email)->get();
+     // dd($emailExists);
      if ($emailExists->isEmpty()) {
-        return view('login');
+        $message = "Invalid credentials";
+        return view('login',compact('message'));
     }
        // dd($emailExists[0]);
      $otpUser = \DB::table('otp_table')->where('user_id', $email)->latest('created_at')->first();
