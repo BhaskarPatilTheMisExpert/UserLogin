@@ -6,7 +6,6 @@
 	<title></title>
 </head>
 <body>
-	# OTP
 
 Your OTP is <h1>{{ $otp }}</h1>. Please use this OTP to verify your email.
 

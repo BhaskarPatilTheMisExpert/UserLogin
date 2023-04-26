@@ -62,7 +62,6 @@ class loginController extends Controller
      $otpUser = \DB::table('otp_table')->where('user_id', $email)->latest('created_at')->first();
 
         if ($emailExists) {
-            // dd($emailExists[0]);
               //for password login
             if ($emailExists[0]->email == $email && $emailExists[0]->password == $otp) {
                 echo "login successfully";  
