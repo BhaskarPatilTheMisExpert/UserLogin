@@ -21,7 +21,7 @@
                     {{ $message }}
                 </div>
                 @endif
-                <form method="GET" action="{{ url('userLogin') }}">
+                <form method="POST" action="{{ url('userLogin') }}">
                     @csrf
                     @method('GET')
                     <div class="input-group mb-3">
@@ -48,7 +48,7 @@
                         </div>
 
                         <input id="password" name="password" type="password" class="form-control  d-inline" required placeholder="Password">
-                        <button type="button" id="withOtp" href="" class="btn btn-xs btn-info mt-2 col-sm-3 d-inline" onclick="changePlaceholder();" value="">with OTP</button>
+                        <button type="button" id="withOtp" href="" class="btn btn-xs btn-info mt-2 col-sm-3 d-inline" onclick="changePlaceholder();" value="">With OTP</button>
                     </div>
 
 
@@ -93,13 +93,13 @@ function changePlaceholder(event) {
 
             return false;
         } else {
-           if (buttonVal == 'with OTP') {
+           if (buttonVal == 'With OTP') {
             $('#password').attr('placeholder', 'Enter OTP');
             $('#withOtp').text('Password');
             getOtp();
         } else {
             $('#password').attr('placeholder', 'Password');
-            $('#withOtp').text('with OTP');
+            $('#withOtp').text('With OTP');
             withPassword();
         }
 

@@ -24,7 +24,7 @@ class loginController extends Controller
         // dd($emailExists);
         if($emailExists){
             $otp = mt_rand(100000, 999999);
-            $expiresAt = Carbon::now()->addMinutes(5);
+            $expiresAt = Carbon::now('Asia/kolkata')->addMinutes(5);
 
             $saveData = \DB::table('otp_table')->insert([
                 'user_id' => $email,
@@ -49,8 +49,9 @@ class loginController extends Controller
 
      $updateStats = DB::table('otp_table')->where([
                                 ['status', '=', 'active'],
-                                ['expire_time', '<=', Carbon::now()]
+                                ['expire_time', '<=', Carbon::now('Asia/kolkata')]
                                  ])->update(['status' => 'inactive']);
+
      $emailExists = \DB::table('users')->where('email', $email)->get();
 
      // dd($emailExists);
@@ -82,8 +83,8 @@ class loginController extends Controller
                 else {
                         $message = "Wrong OTP/password entered";
                        return view('login', compact('message'));
-                    // return view('login');
-                 }
+                       // return view('login');
+                }
             }
             else
             {
@@ -105,7 +106,7 @@ class loginController extends Controller
     {
         $OtpStatus = DB::table('otp_table')->where([
             ['status', '=', 'active'],
-            ['expire_time', '<=', Carbon::now()]
+            ['expire_time', '<=', Carbon::now('Asia/kolkata')]
         ])->update(['status' => 'inactive']);
 
         Log::info('Expired OTPs updated successfully');
