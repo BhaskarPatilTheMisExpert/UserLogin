@@ -15,12 +15,19 @@
                 <div class="clearfix" style="padding-top:20px;">
 
                 </div>
+                <div id="loader" class="loader">
+                    <div class="loader-text">
+                        
+                    </div>
+                </div>
+
                 
                 @if($message)
                 <div id = "error-message" class="alert alert-info" role="alert">
                     {{ $message }}
                 </div>
                 @endif
+               <span class="justify-content-center center " style="display:flex;"id="otp-message"></span>
                 <form method="POST" action="{{ url('userLogin') }}">
                     @csrf
                     @method('GET')
@@ -42,7 +49,7 @@
                     <span  id="error-msg" style="color:red;"></span>
 
                     <div class="input-group mb-3" style="display: inline-flex;">
-                     <div class="input-group mb-3">
+                       <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-lock"></i></span>
                         </div>
@@ -81,9 +88,48 @@
     </div>
 </div>
 </div>
+<style type="text/css">
+    #loader {
+      border: 16px solid #f3f3f3; /* light grey border */
+      border-top: 16px solid #3498db; /* blue border on top */
+      border-radius: 50%; /* make it circular */
+      width: 120px;
+      height: 120px;
+      animation: spin 2s linear infinite; /* spin animation */
+      margin: auto; /* center it horizontally */
+      z-index: 9999;
+      display: none;
+  }
+
+  @keyframes spin {
+      0% { transform: rotate(0deg); } /* starting position */
+      100% { transform: rotate(360deg); } /* ending position */
+  }
+
+  .loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 99999;
+  background-color: rgba(0, 0, 0, 0.5);
+  cursor: progress;
+}
+
+.loader-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+    
+
+</style>
 
 <script type="text/javascript">
-function changePlaceholder(event) {
+    function changePlaceholder(event) {
         var buttonVal = $('#withOtp').text();
         // console.log(buttonVal);
 
@@ -93,13 +139,16 @@ function changePlaceholder(event) {
 
             return false;
         } else {
-           if (buttonVal == 'With OTP') {
+         if (buttonVal == 'With OTP') {
             $('#password').attr('placeholder', 'Enter OTP');
             $('#withOtp').text('Password');
+            $("#password").attr("name", "otp");
             getOtp();
+            $('#withOtp').prop('disabled', true);
         } else {
             $('#password').attr('placeholder', 'Password');
             $('#withOtp').text('With OTP');
+            $("#password").attr("name", "password");
             withPassword();
         }
 
@@ -108,25 +157,41 @@ function changePlaceholder(event) {
     }
 }
 
-
 function getOtp() {
   let email = $('#email').val();
-  
-  $.ajax({
-    url: '/getOtp',
-    data: {
-        'email': email,
-    },
-    type: 'GET',
-    cache: false,
-    dataType: 'json',
-    success: function(result) {
-        console.log(result.message);
-        alert(result.message);
-    },
+  let loader = $('#loader'); // assuming you have an element with id 'loader' that contains your loader animation
 
-  });
+  // disable all user input while the loader is on
+  $('body').addClass('loading');
+
+  $.ajax({
+        url: '/getOtp',
+        data: {
+            'email': email,
+         },
+        type: 'GET',
+        cache: false,
+        dataType: 'json',
+        beforeSend: function() {
+          // show the loader animation before the AJAX request is sent
+          loader.show();
+        },
+      success: function(result) {
+        console.log(result.message);
+            // alert(result.message);
+            $('#otp-message').html(result.message).addClass('alert alert-info ').fadeOut(3000);
+            $('#withOtp').prop('disabled', false);
+
+      },
+      complete: function() {
+          // hide the loader animation after the AJAX request is complete
+          loader.hide();
+          // re-enable user input after the loader is hidden
+          $('body').removeClass('loading');
+      }
+   });
 }
+
 
 function withPassword()
 {
@@ -134,9 +199,10 @@ function withPassword()
     console.log(userPassword);
 }
 
- setTimeout(function() {
-        document.getElementById('error-message').style.display = 'none';
-    }, 5000);
+setTimeout(function() {
+    document.getElementById('error-message').style.display = 'none';
+    document.getElementById('otp-message').style.display = 'none';
+}, 5000);
 
 
 </script>

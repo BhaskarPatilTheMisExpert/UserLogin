@@ -26,11 +26,11 @@ class loginController extends Controller
             $otp = mt_rand(100000, 999999);
             $expiresAt = Carbon::now('Asia/kolkata')->addMinutes(5);
 
-            $saveData = \DB::table('otp_table')->insert([
-                'user_id' => $email,
+            $saveData = \DB::table('otp')->insert([
+                'user_id' => $emailExists->id,
                 'otp' => $otp,
                 'expire_time'=>$expiresAt, 
-                'status'=>'active', 
+                'status'=>'A', 
             ]);
             $sendMail = Mail::to($email)->send(new OtpMail($otp));
 
@@ -44,67 +44,59 @@ class loginController extends Controller
     public function userLogin(Request $request)
     {
      $input = $request->all();
-     $email = $request->input('email');
-     $otp = $request->input('password');
-
-     $updateStats = DB::table('otp_table')->where([
-                                ['status', '=', 'active'],
-                                ['expire_time', '<=', Carbon::now('Asia/kolkata')]
-                                 ])->update(['status' => 'inactive']);
+     $email = $input['email'];
+     
+     $updateStats = DB::table('otp')->where([
+        ['status', '=', 'active'],
+        ['expire_time', '<=', Carbon::now('Asia/kolkata')]
+    ])->update(['status' => 'I']);
 
      $emailExists = \DB::table('users')->where('email', $email)->get();
+     $otpUser = \DB::table('otp')->where('user_id', $email)->latest('created_at')->first();
 
-     // dd($emailExists);
+        // dd($otpUser->expire_time >= Carbon::now('Asia/kolkata'));
      if ($emailExists->isEmpty()) {
         $message = "Invalid credentials";
         return view('login',compact('message'));
-    }
-       // dd($emailExists[0]);
-     $otpUser = \DB::table('otp_table')->where('user_id', $email)->latest('created_at')->first();
+    } else{
 
-        if ($emailExists) {
-            // dd($emailExists[0]);
-              //for password login
-            if ($emailExists[0]->email == $email && $emailExists[0]->password == $otp) {
-                echo "login successfully";  
-            }
-            elseif($emailExists){
-                //for otp login
-                if ($otpUser && $otpUser->otp == $otp && $otpUser->expire_time >= Carbon::now()) 
-                {
-                    $updateStatus =  DB::table('otp_table')
-                    ->where('user_id', '=', $email)
-                    ->where('otp', '=', $otp)
-                    ->update(['status' => 'used']);
+
+        if (array_key_exists('otp', $input)) {
+        // OTP-based login
+            $otp = $input['otp'];
+            if ($otpUser && $otpUser->otp == $otp && $otpUser->expire_time >= Carbon::now('Asia/kolkata')) 
+            {
+                $updateStatus =  DB::table('otp')
+                ->where('user_id', '=', $email)
+                ->where('otp', '=', $otp)
+                ->update(['status' => 'U']);
 
                     // return response()->json(['message' => 'Login successful']);
-                    echo "login successfully";
-                } 
-                else {
-                        $message = "Wrong OTP/password entered";
-                       return view('login', compact('message'));
-                       // return view('login');
-                }
+                echo "login successfully";
+            } 
+            else {
+                $message = "Wrong OTP entered";
+                return view('login', compact('message'));
             }
-            else
-            {
-                // echo"password not valid";
-               $message = "Email not registered";
-               return view('login', compact('message'));
+        } 
+        elseif (array_key_exists('password', $input)) {
+         //password based loign
+            $password = $input['password'];
+            if ($emailExists[0]->email == $email && $emailExists[0]->password == $password) {
+                echo "login successfully";  
+            }
+            else{
+                $message = "Wrong password entered";
+                return view('login', compact('message'));
             }
         }
-        else
-        {
-            // return view('login');
-           $message = "Wrong email or password";
-           return view('login', compact('message'));
-        }
+     }    
 
     }
 
     public function expiredOtpStatus()
     {
-        $OtpStatus = DB::table('otp_table')->where([
+        $OtpStatus = DB::table('otp')->where([
             ['status', '=', 'active'],
             ['expire_time', '<=', Carbon::now('Asia/kolkata')]
         ])->update(['status' => 'inactive']);

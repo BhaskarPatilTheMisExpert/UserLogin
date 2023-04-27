@@ -11,14 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('otp_table', function (Blueprint $table) {
-            $table->id();
-            $table->string('user_id');
-            $table->string('otp');
-            $table->string('status');
-            $table->string('expire_time');
-            $table->timestamps();
-        });
+        Schema::create('otp', function (Blueprint $table) {
+        $table->id();
+        $table->string('user_id');
+        $table->string('otp');
+        $table->string('status');
+        $table->dateTime('expire_time');
+        $table->timestamp('created_at')->nullable()->default(DB::raw('CURRENT_TIMESTAMP'));
+        $table->timestamp('updated_at')->nullable()->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
+    });
     }
 
     /**
