@@ -36,12 +36,12 @@ class loginController extends Controller
                 'status'=>'A', 
             ]);
 
+            $sendMail = Mail::to($email)->send(new OtpMail($otp));
+
             $updateStats = Otp::where([
                 ['status', '=', 'A'],
                 ['expire_time', '<=', Carbon::now('Asia/kolkata')]
             ])->update(['status' => 'I']);
-
-            $sendMail = Mail::to($email)->send(new OtpMail($otp));
 
             return response()->json(['message' => 'OTP sent to email']);
         }
@@ -65,9 +65,13 @@ class loginController extends Controller
                 if (array_key_exists('otp', $input)) {
                     // OTP-based login
                     $otp = $input['otp'];
-                    $otpUser = Otp::where('user_id', $emailExists[0]->id)->latest('created_at')->first();
+                    $currentTime = Carbon::now('Asia/kolkata');
+                    $query = 'SELECT * FROM otp WHERE user_id = '.$emailExists[0]->id.' AND otp = '.$otp.' AND expire_time >= \''.$currentTime.'\' ORDER BY created_at DESC';
+                    // dd($query);
+                    $resultset = DB::select($query);
+                   // dd($resultset);
 
-                    if ($otpUser && $otpUser->otp == $otp && $otpUser->expire_time >= Carbon::now('Asia/kolkata')) 
+                    if ($resultset) 
                     {
                         $updateStatus =  Otp::where('user_id', '=', $emailExists[0]->id)
                         ->where('otp', '=', $otp)
@@ -87,8 +91,7 @@ class loginController extends Controller
                         'email' => $email,
                         'password'=> $password
                      );
-                    // if ($emailExists[0]->email == $email && $emailExists[0]->password == $password)
-                     if( Auth::attempt($credentials)) 
+                     if(Auth::attempt($credentials)) 
                     {
                         echo "login successfully";  
                     }
