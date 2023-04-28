@@ -1,6 +1,3 @@
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.0/dist/sweetalert2.min.css">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.0/dist/sweetalert2.min.js"></script>
-
 @extends('app')
 @section('content')
 <div class="row justify-content-center">
@@ -17,17 +14,17 @@
                 </div>
                 <div id="loader" class="loader">
                     <div class="loader-text">
-                        
+
                     </div>
                 </div>
 
                 
                 @if($message)
-                <div id = "error-message" class="alert alert-info" role="alert">
+                <div id = "error-message" class="alert alert-info text-center" role="alert">
                     {{ $message }}
                 </div>
                 @endif
-               <span class="justify-content-center center " style="display:flex;"id="otp-message"></span>
+                <span class="justify-content-center center " style="display:flex;"id="otp-message"></span>
                 <form method="POST" action="{{ url('userLogin') }}">
                     @csrf
                     @method('GET')
@@ -49,44 +46,45 @@
                     <span  id="error-msg" style="color:red;"></span>
 
                     <div class="input-group mb-3" style="display: inline-flex;">
-                       <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                            </div>
+
+                            <input id="password" name="password" type="password" class="form-control  d-inline" required placeholder="Password">  
+                            <div class="input-group-append">
+                                <button type="button" id="withOtp" href="" class="btn btn-sm btn-info px-4 " onclick="changePlaceholder();" value="">With OTP</button>
+                            </div>
                         </div>
 
-                        <input id="password" name="password" type="password" class="form-control  d-inline" required placeholder="Password">
-                        <button type="button" id="withOtp" href="" class="btn btn-xs btn-info mt-2 col-sm-3 d-inline" onclick="changePlaceholder();" value="">With OTP</button>
+                        @if($errors->has('password'))
+                        <div class="invalid-feedback">
+                            {{ $errors->first('password') }}
+                        </div>
+                        @endif
                     </div>
 
+                    <div class="input-group mb-4">
+                        <div class="form-check checkbox">
+                            <input class="form-check-input" name="remember" type="checkbox" id="remember" style="vertical-align: middle;" />
+                            <label class="form-check-label" for="remember" style="vertical-align: middle;">
+                                Remember me
+                            </label>
+                        </div>
 
-                    @if($errors->has('password'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('password') }}
-                    </div>
-                    @endif
-                </div>
-
-                <div class="input-group mb-4">
-                    <div class="form-check checkbox">
-                        <input class="form-check-input" name="remember" type="checkbox" id="remember" style="vertical-align: middle;" />
-                        <label class="form-check-label" for="remember" style="vertical-align: middle;">
-                            Remember me
-                        </label>
                     </div>
 
-                </div>
-
-                <div class="row">
-                    <div class="col-6">
-                        <button type="submit" class="btn btn-primary px-4">
-                            Login
-                        </button>
+                    <div class="row">
+                        <div class="col-6">
+                            <button type="submit" class="btn btn-primary px-4">
+                                Login
+                            </button>
+                        </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 </div>
 <style type="text/css">
     #loader {
@@ -107,24 +105,24 @@
   }
 
   .loader {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 99999;
-  background-color: rgba(0, 0, 0, 0.5);
-  cursor: progress;
-}
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 99999;
+      background-color: rgba(0, 0, 0, 0.5);
+      cursor: progress;
+  }
 
-.loader-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-}
-    
+  .loader-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+  }
+
 
 </style>
 
@@ -159,37 +157,35 @@
 
 function getOtp() {
   let email = $('#email').val();
-  let loader = $('#loader'); // assuming you have an element with id 'loader' that contains your loader animation
+  let loader = $('#loader'); 
 
-  // disable all user input while the loader is on
   $('body').addClass('loading');
 
   $.ajax({
         url: '/getOtp',
         data: {
             'email': email,
-         },
+        },
         type: 'GET',
         cache: false,
         dataType: 'json',
         beforeSend: function() {
-          // show the loader animation before the AJAX request is sent
           loader.show();
         },
-      success: function(result) {
-        console.log(result.message);
-            // alert(result.message);
+        success: function(result) {
+            console.log(result.message);
+                // setTimeout(function(){
+
+                // },3000);
             $('#otp-message').html(result.message).addClass('alert alert-info ').fadeOut(3000);
             $('#withOtp').prop('disabled', false);
 
-      },
-      complete: function() {
-          // hide the loader animation after the AJAX request is complete
+        },
+        complete: function() {
           loader.hide();
-          // re-enable user input after the loader is hidden
           $('body').removeClass('loading');
-      }
-   });
+        }
+    });
 }
 
 
@@ -202,6 +198,7 @@ function withPassword()
 setTimeout(function() {
     document.getElementById('error-message').style.display = 'none';
     document.getElementById('otp-message').style.display = 'none';
+
 }, 5000);
 
 
