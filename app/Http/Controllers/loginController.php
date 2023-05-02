@@ -21,7 +21,10 @@ class loginController extends Controller
 
     public function generateOtp(Request $request)
     {
-
+        $updateStats = Otp::where([
+                        ['status', '=', 'A']
+                    ])->update(['status' => 'I']);
+         
         $email = $request ->email;
         $emailExists = User::where('email', $email)->first();
         // dd($emailExists);
@@ -37,11 +40,6 @@ class loginController extends Controller
             ]);
 
             $sendMail = Mail::to($email)->send(new OtpMail($otp));
-
-            $updateStats = Otp::where([
-                ['status', '=', 'A'],
-                ['expire_time', '<=', Carbon::now('Asia/kolkata')]
-            ])->update(['status' => 'I']);
 
             return response()->json(['message' => 'OTP sent to email']);
         }
@@ -66,12 +64,14 @@ class loginController extends Controller
                     // OTP-based login
                     $otp = $input['otp'];
                     $currentTime = Carbon::now('Asia/kolkata');
-                    $query = 'SELECT * FROM otp WHERE user_id = '.$emailExists[0]->id.' AND otp = '.$otp.' AND expire_time >= \''.$currentTime.'\' ORDER BY created_at DESC';
-                    // dd($query);
-                    $resultset = DB::select($query);
-                   // dd($resultset);
 
-                    if ($resultset) 
+                    $query = Otp::where('user_id', $emailExists[0]->id)
+                            ->where('otp', $otp)
+                            ->where('expire_time', '>=', $currentTime)
+                            ->orderBy('created_at', 'desc')
+                            ->get();
+                    dd(!empty($query));
+                    if ($query) 
                     {
                         $updateStatus =  Otp::where('user_id', '=', $emailExists[0]->id)
                         ->where('otp', '=', $otp)
@@ -104,13 +104,13 @@ class loginController extends Controller
 
     }
 
-    public function expiredOtpStatus()
+public function expiredOtpStatus()
     {
-        $OtpStatus = DB::table('otp')->where([
-            ['status', '=', 'A'],
-            ['expire_time', '<=', Carbon::now('Asia/kolkata')]
-        ])->update(['status' => 'I']);
+    //     $OtpStatus = DB::table('otp')->where([
+    //         ['status', '=', 'A'],
+    //         ['expire_time', '<=', Carbon::now('Asia/kolkata')]
+    //     ])->update(['status' => 'I']);
 
-        Log::info('Expired OTPs updated successfully');
+    //     Log::info('Expired OTPs updated successfully');
     }
 }
