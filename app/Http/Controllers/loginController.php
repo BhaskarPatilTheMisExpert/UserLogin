@@ -19,33 +19,86 @@ class loginController extends Controller
         return view('login',compact('message')); 
     }
 
+    // public function generateOtp(Request $request)
+    // {
+    //     $updateStats = Otp::where([
+    //                     ['status', '=', 'A']
+    //                 ])->update(['status' => 'I']);
+         
+    //     $email = $request ->email;
+    //     $emailExists = User::where('email', $email)->first();
+    //     // dd($emailExists);
+    //     if($emailExists){
+    //         $otp = mt_rand(100000, 999999);
+    //         $expiresAt = Carbon::now('Asia/kolkata')->addMinutes(5);
+
+    //         $saveData = Otp::insert([
+    //             'user_id' => $emailExists->id,
+    //             'otp' => $otp,
+    //             'expire_time'=>$expiresAt, 
+    //             'status'=>'A', 
+    //         ]);
+
+    //         $sendMail = Mail::to($email)->send(new OtpMail($otp));
+    //         // dd($sendMail);
+    //         return response()->json(['message' => 'OTP sent to email']);
+    //         // return response()->json($sendMail);
+    //     }
+    //     return response()->json(['message' => 'Email not registered']);
+    // }
+
     public function generateOtp(Request $request)
     {
-        $updateStats = Otp::where([
-                        ['status', '=', 'A']
-                    ])->update(['status' => 'I']);
-         
-        $email = $request ->email;
-        $emailExists = User::where('email', $email)->first();
-        // dd($emailExists);
-        if($emailExists){
-            $otp = mt_rand(100000, 999999);
-            $expiresAt = Carbon::now('Asia/kolkata')->addMinutes(5);
+        try {
+            $response = [
+                'success' => 0,
+                'data' => 'Process failed'
+            ];
+            
 
-            $saveData = Otp::insert([
-                'user_id' => $emailExists->id,
-                'otp' => $otp,
-                'expire_time'=>$expiresAt, 
-                'status'=>'A', 
-            ]);
+            $updateStats = Otp::where([
+                ['status', '=', 'A']
+            ])->update(['status' => 'I']);
 
-            $sendMail = Mail::to($email)->send(new OtpMail($otp));
+            $email = $request->email;
+            $emailExists = User::where('email', $email)->first();
 
-            return response()->json(['message' => 'OTP sent to email']);
+            if ($emailExists) {
+                $otp = mt_rand(100000, 999999);
+                $expiresAt = Carbon::now('Asia/kolkata')->addMinutes(5);
+
+                $saveData = Otp::insert([
+                    'user_id' => $emailExists->id,
+                    'otp' => $otp,
+                    'expire_time' => $expiresAt,
+                    'status' => 'A',
+                ]);
+
+                $sendMail = Mail::to($email)->send(new OtpMail($otp));
+
+                if ($sendMail) {
+                    $response = [
+                        'success' => 1,
+                        'data' => 'OTP sent to email',
+                    ];
+                    
+                } else {
+                   
+                }
+            } else {
+                $response['data'] = 'Email not registered';
+                
+            }
+        } catch (Exception $exception) {
+            
+            $response['data'] = $exception->getMessage();
+        } catch (QueryException $exception) {
+            
+            $response['data'] = $exception->getMessage();
+        } finally {
+            return $response;
         }
-        return response()->json(['message' => 'Email not registered']);
 
-        
     }
 
     public function userLogin(Request $request)
@@ -70,8 +123,8 @@ class loginController extends Controller
                             ->where('expire_time', '>=', $currentTime)
                             ->orderBy('created_at', 'desc')
                             ->get();
-                    dd(!empty($query));
-                    if ($query) 
+                    // dd($query[0]->exists);
+                    if ($query->isNotEmpty()) 
                     {
                         $updateStatus =  Otp::where('user_id', '=', $emailExists[0]->id)
                         ->where('otp', '=', $otp)
@@ -101,7 +154,6 @@ class loginController extends Controller
                     }
                 }
             }    
-
     }
 
 public function expiredOtpStatus()

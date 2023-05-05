@@ -173,11 +173,11 @@ function getOtp() {
           loader.show();
         },
         success: function(result) {
-            console.log(result.message);
+            console.log(result);
                 // setTimeout(function(){
 
                 // },3000);
-            $('#otp-message').html(result.message).addClass('alert alert-info ').fadeOut(3000);
+            $('#otp-message').html(result.data).addClass('alert alert-info ').show().fadeOut(3000);
             $('#withOtp').prop('disabled', false);
 
         },
