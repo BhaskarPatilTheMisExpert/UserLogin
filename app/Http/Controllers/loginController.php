@@ -101,59 +101,121 @@ class loginController extends Controller
 
     }
 
+    // public function userLogin(Request $request)
+    // {
+    //  $input = $request->all();
+    //  $email = $input['email'];
+
+    //  $emailExists = User::where('email', $email)->get();
+     
+    //     if ($emailExists->isEmpty()) {
+    //         $message = "Invalid credentials";
+    //         return view('login',compact('message'));
+    //     } else{
+
+    //             if (array_key_exists('otp', $input)) {
+    //                 // OTP-based login
+    //                 $otp = $input['otp'];
+    //                 $currentTime = Carbon::now('Asia/kolkata');
+
+    //                 $query = Otp::where('user_id', $emailExists[0]->id)
+    //                         ->where('otp', $otp)
+    //                         ->where('expire_time', '>=', $currentTime)
+    //                         ->orderBy('created_at', 'desc')
+    //                         ->get();
+    //                 // dd($query[0]->exists);
+    //                 if ($query->isNotEmpty()) 
+    //                 {
+    //                     $updateStatus =  Otp::where('user_id', '=', $emailExists[0]->id)
+    //                     ->where('otp', '=', $otp)
+    //                     ->update(['status' => 'U']);
+
+    //                     echo "login successfully";
+    //                 } 
+    //                 else {
+    //                     $message = "Wrong OTP entered";
+    //                     return view('login', compact('message'));
+    //                 }
+    //             } 
+    //             elseif (array_key_exists('password', $input)) {
+    //                 //password based loign
+    //                 $password = $input['password'];
+    //                 $credentials = array(
+    //                     'email' => $email,
+    //                     'password'=> $password
+    //                  );
+    //                  if(Auth::attempt($credentials)) 
+    //                 {
+    //                     echo "login successfully";  
+    //                 }
+    //                 else{
+    //                     $message = "Wrong password entered";
+    //                     return view('login', compact('message'));
+    //                 }
+    //             }
+    //         }    
+    // }
+
     public function userLogin(Request $request)
     {
-     $input = $request->all();
-     $email = $input['email'];
+        $input = $request->all();
+        $email = $input['email'];
 
-     $emailExists = User::where('email', $email)->get();
-     
+        $emailExists = User::where('email', $email)->get();
+
         if ($emailExists->isEmpty()) {
             $message = "Invalid credentials";
-            return view('login',compact('message'));
-        } else{
+            return view('login', compact('message'));
+        } else {
+            if (array_key_exists('otp', $input)) {
+                // OTP-based login
+                $otp = $input['otp'];
+                $currentTime = Carbon::now('Asia/Kolkata');
 
-                if (array_key_exists('otp', $input)) {
-                    // OTP-based login
-                    $otp = $input['otp'];
-                    $currentTime = Carbon::now('Asia/kolkata');
+                $query = Otp::where('user_id', $emailExists[0]->id)
+                ->where('otp', $otp)
+                ->where('expire_time', '>=', $currentTime)
+                ->orderBy('created_at', 'desc')
+                ->get();
 
-                    $query = Otp::where('user_id', $emailExists[0]->id)
-                            ->where('otp', $otp)
-                            ->where('expire_time', '>=', $currentTime)
-                            ->orderBy('created_at', 'desc')
-                            ->get();
-                    // dd($query[0]->exists);
-                    if ($query->isNotEmpty()) 
-                    {
-                        $updateStatus =  Otp::where('user_id', '=', $emailExists[0]->id)
-                        ->where('otp', '=', $otp)
-                        ->update(['status' => 'U']);
+                if ($query->isNotEmpty()) {
+                    $updateStatus = Otp::where('user_id', '=', $emailExists[0]->id)
+                    ->where('otp', '=', $otp)
+                    ->update(['status' => 'U']);
 
-                        echo "login successfully";
-                    } 
-                    else {
-                        $message = "Wrong OTP entered";
+                    echo "Login successfully";
+                } else {
+                    // Check the number of attempts
+                    $attempts = $request->session()->get('otp_attempts', 0);
+                    $attempts++;
+
+                    if ($attempts >= 3) {
+                        $message = "Invalid OTP. Maximum attempts reached.";
                         return view('login', compact('message'));
                     }
-                } 
-                elseif (array_key_exists('password', $input)) {
-                    //password based loign
-                    $password = $input['password'];
-                    $credentials = array(
-                        'email' => $email,
-                        'password'=> $password
-                     );
-                     if(Auth::attempt($credentials)) 
-                    {
-                        echo "login successfully";  
-                    }
-                    else{
-                        $message = "Wrong password entered";
-                        return view('login', compact('message'));
-                    }
+
+                 // Store the updated attempts count in session
+                    $request->session()->put('otp_attempts', $attempts);
+
+                    $message = "Wrong OTP entered. Please try again.";
+                    return view('login', compact('message'));
                 }
-            }    
+            } elseif (array_key_exists('password', $input)) {
+                // Password-based login
+                $password = $input['password'];
+                $credentials = array(
+                    'email' => $email,
+                    'password' => $password
+                );
+
+                if (Auth::attempt($credentials)) {
+                    echo "Login successfully";
+                } else {
+                    $message = "Wrong password entered";
+                    return view('login', compact('message'));
+                }
+            }
+        }
     }
 
 public function expiredOtpStatus()
