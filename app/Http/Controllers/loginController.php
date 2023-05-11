@@ -95,7 +95,7 @@ class loginController extends Controller
         } catch (QueryException $exception) {
             
             $response['data'] = $exception->getMessage();
-        } finally {
+        }  finally {
             return $response;
         }
 

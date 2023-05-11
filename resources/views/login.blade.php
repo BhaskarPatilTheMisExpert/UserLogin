@@ -53,7 +53,8 @@
 
                             <input id="password" name="password" type="password" class="form-control  d-inline" required placeholder="Password">  
                             <div class="input-group-append">
-                                <button type="button" id="withOtp" href="" class="btn btn-sm btn-info px-4 " onclick="changePlaceholder();" value="">With OTP</button>
+                                <!-- <button type="button" id="withOtp" href="" class="btn btn-sm btn-info px-4 " onclick="changePlaceholder();" value="">With OTP</button> -->
+                                 <button type="button" id="showPassword" href="" class="btn btn-sm btn-secondary px-4 " value=""><i class="fas fa-eye-slash" id="eye"></i></button>
                             </div>
                         </div>
 
@@ -79,6 +80,7 @@
                             <button type="submit" class="btn btn-primary px-4">
                                 Login
                             </button>
+                             <button type="button" id="withOtp" href="" class="btn btn-md btn-info px-3  " onclick="changePlaceholder();" value="">With OTP</button>
                         </div>
                     </div>
                 </form>
@@ -201,6 +203,28 @@ setTimeout(function() {
 
 }, 5000);
 
+$(function(){
+  
+  $('#showPassword').click(function(){
+       
+        if($('#eye').hasClass('fa-eye-slash')){
+           
+          $('#eye').removeClass('fa-eye-slash');
+          
+          $('#eye').addClass('fa-eye');
+          
+          $('#password').attr('type','text');
+            
+        }else{
+         
+          $('#eye').removeClass('fa-eye');
+          
+          $('#eye').addClass('fa-eye-slash');  
+          
+          $('#password').attr('type','password');
+        }
+    });
+});
 
 </script>
 @endsection
