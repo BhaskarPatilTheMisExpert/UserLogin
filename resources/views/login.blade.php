@@ -20,11 +20,12 @@
 
                 
                 @if($message)
-                <div id = "error-message" class="alert alert-info text-center" role="alert">
+                <div id = "error-message" class="alert alert-info text-center justify-content-center" role="alert">
                     {{ $message }}
                 </div>
                 @endif
-                <span class="justify-content-center center " style="display:flex;"id="otp-message"></span>
+                <div class="justify-content-center text-center " style="display:flex;" id="otp-message"></div>
+                
                 <form method="POST" action="{{ url('userLogin') }}">
                     @csrf
                     @method('GET')
@@ -129,6 +130,16 @@
 </style>
 
 <script type="text/javascript">
+    $wrongMsg = document.getElementById('wmsg');
+    // console.log($wrongMsg);
+    if ($wrongMsg)
+    {
+       console.log('true');
+       $('#password').attr('placeholder', 'Enter OTP');
+       $('#withOtp').text('Password');
+       $("#password").attr("name", "otp");
+   }
+
     function changePlaceholder(event) {
         var buttonVal = $('#withOtp').text();
         // console.log(buttonVal);
@@ -179,7 +190,7 @@ function getOtp() {
                 // setTimeout(function(){
 
                 // },3000);
-            $('#otp-message').html(result.data).addClass('alert alert-info ').show().fadeOut(3000);
+            $('#otp-message').html(result.message).addClass('alert alert-info ').show().fadeOut(3000);
             $('#withOtp').prop('disabled', false);
 
         },
