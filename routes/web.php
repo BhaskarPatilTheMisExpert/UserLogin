@@ -21,3 +21,5 @@ Route::get('/', function () {
 Route::get('/login',[loginController::class, 'index'])->name('login.index');
 Route::get('getOtp',[loginController::class, 'generateOtp']);
 Route::get('userLogin',[loginController::class, 'userLogin'])->name('userLogin.userLogin');
+Route::get('getEmail',[loginController::class, 'getEmail'])->name('getEmail');
+

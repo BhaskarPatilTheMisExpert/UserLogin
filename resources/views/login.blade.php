@@ -25,6 +25,12 @@
                 </div>
                 @endif
                 <div class="justify-content-center text-center " style="display:flex;" id="otp-message"></div>
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                      <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
                 
                 <form method="POST" action="{{ url('userLogin') }}">
                     @csrf
@@ -35,7 +41,7 @@
                                 <i class="fa fa-user"></i>
                             </span>
                         </div>
-                        <input id="email" name="email" type="text" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" required autocomplete="email" autofocus placeholder="Email" value="" autocomplete="">
+                        <input id="email" name="email" type="text" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" required autocomplete="email" autofocus placeholder="Email" value="{{$email ?? ''}}" autocomplete="">
 
                         @if($errors->has('email'))
                         <div class="invalid-feedback">
@@ -54,8 +60,7 @@
 
                             <input id="password" name="password" type="password" class="form-control  d-inline" required placeholder="Password">  
                             <div class="input-group-append">
-                                <!-- <button type="button" id="withOtp" href="" class="btn btn-sm btn-info px-4 " onclick="changePlaceholder();" value="">With OTP</button> -->
-                                 <button type="button" id="showPassword" href="" class="btn btn-sm btn-secondary px-4 " value=""><i class="fas fa-eye-slash" id="eye"></i></button>
+                                 <button type="button" id="showPassword" href="" class="btn btn-sm btn-secondary px-4 " value=""><i class="fas fa-eye-slash" id="eye" title="Show password"></i></button>
                             </div>
                         </div>
 
@@ -81,7 +86,7 @@
                             <button type="submit" class="btn btn-primary px-4">
                                 Login
                             </button>
-                             <button type="button" id="withOtp" href="" class="btn btn-md btn-info px-3  " onclick="changePlaceholder();" value="">With OTP</button>
+                             <button type="button" id="withOtp" href="" class="btn btn-md btn-info px-3  " onclick="getOtp()" value="">With OTP</button>
                         </div>
                     </div>
                 </form>
@@ -140,33 +145,33 @@
        $("#password").attr("name", "otp");
    }
 
-    function changePlaceholder(event) {
-        var buttonVal = $('#withOtp').text();
-        // console.log(buttonVal);
+    // function changePlaceholder(event) {
+    //     var buttonVal = $('#withOtp').text();
+    //     // console.log(buttonVal);
 
-        var inputVal = $('#email').val();
-        if (inputVal === '') {
-            $('#error-msg').text('Email cannot be blank');
+    //     var inputVal = $('#email').val();
+    //     if (inputVal === '') {
+    //         $('#error-msg').text('Email cannot be blank');
 
-            return false;
-        } else {
-         if (buttonVal == 'With OTP') {
-            $('#password').attr('placeholder', 'Enter OTP');
-            $('#withOtp').text('Password');
-            $("#password").attr("name", "otp");
-            getOtp();
-            $('#withOtp').prop('disabled', true);
-        } else {
-            $('#password').attr('placeholder', 'Password');
-            $('#withOtp').text('With OTP');
-            $("#password").attr("name", "password");
-            withPassword();
-        }
+    //         return false;
+    //     } else {
+    //      if (buttonVal == 'With OTP') {
+    //         $('#password').attr('placeholder', 'Enter OTP');
+    //         $('#withOtp').text('Password');
+            
+    //         getOtp();
+    //         $('#withOtp').prop('disabled', true);
+    //     } else {
+    //         $('#password').attr('placeholder', 'Password');
+    //         $('#withOtp').text('With OTP');
+    //         $("#password").attr("name", "password");
+    //         withPassword();
+    //     }
 
-        $('#error-msg').text('');
-        return true;
-    }
-}
+    //     $('#error-msg').text('');
+    //     return true;
+    // }
+    // }
 
 function getOtp() {
   let email = $('#email').val();

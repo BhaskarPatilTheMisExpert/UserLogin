@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
+            $table->rememberToken();
             $table->timestamps();
         });
     }
@@ -28,3 +29,6 @@ return new class extends Migration
         Schema::dropIfExists('users');
     }
 };
+
+
+

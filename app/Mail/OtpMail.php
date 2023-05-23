@@ -14,7 +14,6 @@ class OtpMail extends Mailable
     use Queueable, SerializesModels;
 
     public $otp;
-
     /**
      * Create a new message instance.
      */
@@ -57,7 +56,7 @@ class OtpMail extends Mailable
     public function build()
     {
         return $this->markdown('emails.otp')->with([
-            'otp' => $this->otp
+            'otp' => $this->otp,
         ]);
     }
 }

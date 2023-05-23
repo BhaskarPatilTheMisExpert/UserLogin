@@ -10,6 +10,8 @@
 
 Your OTP is <h1>{{ $otp }}</h1>. Please use this OTP to verify your email.
 
+<p>login link : <a href="http://127.0.0.1:8000/login">http://127.0.0.1:8000/login</a></p>
+
 Thanks,<br>
 
 </body>
