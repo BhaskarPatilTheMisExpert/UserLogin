@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\loginController;
+use App\Http\Controllers\ImageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,3 +22,6 @@ Route::get('/', function () {
 Route::get('/login',[loginController::class, 'index'])->name('login.index');
 Route::get('getOtp',[loginController::class, 'generateOtp']);
 Route::get('userLogin',[loginController::class, 'userLogin'])->name('userLogin.userLogin');
+Route::get('uploadImg',[ImageController::class, 'uploadImag']);
+Route::get('imageUploadSave',[ImageController::class, 'imageUploadSave'])->name('imageUploadSave');
+
