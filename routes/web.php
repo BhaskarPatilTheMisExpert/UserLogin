@@ -24,4 +24,5 @@ Route::get('getOtp',[loginController::class, 'generateOtp']);
 Route::get('userLogin',[loginController::class, 'userLogin'])->name('userLogin.userLogin');
 Route::get('uploadImg',[ImageController::class, 'uploadImag']);
 Route::get('imageUploadSave',[ImageController::class, 'imageUploadSave'])->name('imageUploadSave');
+Route::get('showImg',[ImageController::class, 'showImg'])->name('showImg');
 
