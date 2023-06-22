@@ -18,7 +18,9 @@
                     <td>
                         
                         <!-- <img src="{{ asset('images/' . $image->name . '/' . $image->name . '.jpg') }}" alt="Image" style="width: 100px;background-color: yellow;"> -->
-                        <img src="{{ asset('images/' . $image->folderName . '/s_' . $image->name) }}" alt="Image" style="width: 100px; background-color: yellow;">
+                        <div class="zoom">
+                            <img class="imageA zoom-image" src="{{ asset('images/' . $image->folderName . '/s_' . $image->name) }}" alt="Image" style="width: 100px; background-color: yellow;">
+                        </div>
 
                     </td>
                     <td>
@@ -49,10 +51,42 @@
             height: auto;
             margin: 10px;
         }
+
+       /* .image-container {
+    overflow: hidden;
+    display: inline-block;
+}
+
+.image {
+    transition: transform 0.3s;
+}
+
+.image:hover {
+    transform: scale(1.2);
+}*/
+
+.zoom {
+  padding: 0px;
+  background-color: white;
+  transition: transform .2s; /* Animation */
+  width: auto;
+  height: auto;
+  margin: 0 auto;
+}
+
+.zoom:hover {
+  transform: scale(1.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+}
+
     </style>
     <script type="text/javascript">
         
         $(document).ready(function() {
+            $('.zoom-image').elevateZoom({
+                zoomType: 'inner',
+                cursor: 'crosshair'
+            });
+
             $("button.view-m").click(function() {
                 var imageData = {
                     folder: $(this).data("folder"),
