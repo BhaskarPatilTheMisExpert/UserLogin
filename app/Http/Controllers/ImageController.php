@@ -7,6 +7,8 @@ use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Images;
 use DB;
+use Illuminate\Support\Str;
+
 
 class ImageController extends Controller
 {
@@ -21,7 +23,8 @@ class ImageController extends Controller
             'image' => 'required|image:jpeg,png|max:2048',
         ]);
 
-        $folderName = time();
+        $folderName = Str::random(10);
+        // dd($folderName);
         $folderPath = public_path('images/' . $folderName);
         mkdir($folderPath, 0777, true);
 
@@ -45,7 +48,8 @@ class ImageController extends Controller
         // unlink(public_path('images/' . $folderName . '/' . $imageName));
 
          $saveData = \DB::table('images')->insert([
-                'name' => $imageName, 
+                'name' => $imageName,
+                'folderName' => $folderName, 
             ]);
 
         return response()->json(['success' => true, 'message' => 'Image uploaded successfully']);
@@ -56,5 +60,13 @@ class ImageController extends Controller
         $images = DB::table('images')->get();
         // dd($images);
         return view('uploadImg.viewImage',compact('images'));
+    }
+
+    public function viewImage(Request $request)
+    {
+         $imageUrl = $request->input('imageUrl');
+
+         
+         return response()->json('ramesh');
     }
 }
