@@ -23,6 +23,7 @@ class ImageController extends Controller
             'image' => 'required|image:jpeg,png|max:2048',
         ]);
 
+
         $folderName = Str::random(10);
         // dd($folderName);
         $folderPath = public_path('images/' . $folderName);

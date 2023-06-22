@@ -68,24 +68,24 @@
 .zoom {
   padding: 0px;
   background-color: white;
-  transition: transform .2s; /* Animation */
+  transition: transform .2s; 
   width: auto;
   height: auto;
   margin: 0 auto;
 }
 
 .zoom:hover {
-  transform: scale(1.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+  transform: scale(1.5); 
 }
 
     </style>
     <script type="text/javascript">
         
         $(document).ready(function() {
-            $('.zoom-image').elevateZoom({
-                zoomType: 'inner',
-                cursor: 'crosshair'
-            });
+            // $('.zoom-image').elevateZoom({
+            //     zoomType: 'inner',
+            //     cursor: 'crosshair'
+            // });
 
             $("button.view-m").click(function() {
                 var imageData = {
