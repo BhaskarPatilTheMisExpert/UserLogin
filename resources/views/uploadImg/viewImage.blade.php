@@ -85,7 +85,7 @@
             var imagePath = "{{ asset('images/') }}" +"/"+ folderName + "/m_" + imageName;
             console.log(imagePath);
             var imageWindow = window.open("", "_blank");
-            imageWindow.document.write('<img src="' + imagePath + '" alt="Image" style="width: 100%;">');
+            imageWindow.document.write('<img src="' + imagePath + '" alt="Image" style="width: auto; height: auto; max-width: 100%; max-height: 100%;">');
         }
 
         function viewImageL(imageData) {
@@ -94,7 +94,7 @@
             var imagePath = "{{ asset('images/') }}" +"/"+ folderName + "/l_" + imageName;
             console.log(imagePath);
             var imageWindow = window.open("", "_blank");
-            imageWindow.document.write('<img src="' + imagePath + '" alt="Image" style="width: 100%;">');
+            imageWindow.document.write('<img src="' + imagePath + '" alt="Image" style="width: auto; height: auto; max-width: 100%; max-height: 100%;">');
         }
 
         function viewImageO(imageData) {
@@ -103,7 +103,7 @@
             var imagePath = "{{ asset('images/') }}" +"/"+ folderName + "/" + imageName;
             console.log(imagePath);
             var imageWindow = window.open("", "_blank");
-            imageWindow.document.write('<img src="' + imagePath + '" alt="Image" style="width: 100%;">');
+            imageWindow.document.write('<img src="' + imagePath + '" alt="Image" style="width: auto; height: auto; max-width: 100%; max-height: 100%;">');
         }
 
     // $(document).ready(function() {
