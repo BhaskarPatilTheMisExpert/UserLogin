@@ -142,8 +142,11 @@
         function viewImage(imagePath) {
             
             console.log(imagePath);
+            //open image in new window 
             // var imageWindow = window.open("", "_blank");
             // imageWindow.document.write('<img src="' + imagePath + '" alt="Image" style="width: auto; height: auto; max-width: 100%; max-height: 100%;">');
+
+            //open image in same window
             window.location.href = imagePath;
             // $('#imageModal').find('.modal-body img').attr('src', imagePath);
             // $('#imageModal').modal('show');
