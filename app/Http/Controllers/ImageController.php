@@ -23,8 +23,14 @@ class ImageController extends Controller
            'image' => 'required|image|mimes:jpeg,png|max:2048',
        ]);
 
+        //folder name as numbers
+        $latestFolder = DB::table('images')->orderBy('id', 'desc')->first();
+        $latestFolderNumber = $latestFolder ? $latestFolder->id + 1 : 1;
+        $folderName = (string) $latestFolderNumber;
 
-        $folderName = Str::random(10);
+        
+        //folder name as string
+        // $folderName = Str::random(10);
         // dd($folderName);
         $folderPath = public_path('images/' . $folderName);
         mkdir($folderPath, 0777, true);
