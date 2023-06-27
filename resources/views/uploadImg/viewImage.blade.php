@@ -26,9 +26,11 @@
                     <td>
                         <!-- <button  class=" btn btn-info view-m" data-image="{{ asset('images/' . $image->name . '/m_' . $image->name) }}">View M</button>&nbsp; -->
 
-                        <button  class=" btn btn-info view-m" data-folder="{{ $image->folderName }}" data-image="{{ $image->name }}">View M</button>&nbsp;
+                        <!-- <button class="btn btn-info view-m" data-folder="{{ $image->folderName }}" data-image="{{ $image->name }}" onclick="viewImage('{{ asset('images/' . $image->folderName . '/m_' . $image->name) }}')">View M</button>
+                        <button class="btn btn-info view-l" data-folder="{{ $image->folderName }}" data-image="{{ $image->name }}" onclick="viewImage('{{ asset('images/' . $image->folderName . '/l_' . $image->name) }}')">View L</button>
+                        <button class="btn btn-info view-o" data-folder="{{ $image->folderName }}" data-image="{{ $image->name }}" onclick="viewImage('{{ asset('images/' . $image->folderName . '/' . $image->name) }}')">View Original</button> -->
 
-                        <!-- <button class="btn btn-info view-m">View M</button> -->
+                        <button  class=" btn btn-info view-m" data-folder="{{ $image->folderName }}" data-image="{{ $image->name }}">View M</button>&nbsp;
 
                         <button class=" btn btn-info view-l" data-folder="{{ $image->folderName }}" data-image="{{ $image->name }}">View L</button>&nbsp;
 
@@ -38,8 +40,17 @@
             @endforeach
         </tbody>
     </table>
+    <div id="imageModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <img src="" alt="Image" style="width: 100%;">
+                </div>
+            </div>
+        </div>
+    </div>
     <style>
-        /* Add your custom CSS styles here */
+       
         .image-list {
             display: flex;
             flex-wrap: wrap;
@@ -75,10 +86,13 @@
 }
 
 .zoom:hover {
-  transform: scale(1.5); 
+  transform: scale(2.5); 
 }
 
     </style>
+    <!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script type="text/javascript">
         
         $(document).ready(function() {
@@ -93,7 +107,11 @@
                     image: $(this).data("image")
                 };
 
-                viewImage(imageData);
+                var folderName = imageData.folder;
+                var imageName = imageData.image;
+                var imagePath = "{{ asset('images/') }}" +"/"+ folderName + "/m_" + imageName;
+
+                viewImage(imagePath);
             });
 
             $("button.view-l").click(function() {
@@ -101,7 +119,12 @@
                     folder: $(this).data("folder"),
                     image: $(this).data("image")
                 };
-                viewImageL(imageData);
+
+                var folderName = imageData.folder;
+                var imageName = imageData.image;
+                var imagePath = "{{ asset('images/') }}" +"/"+ folderName + "/l_" + imageName;
+
+                viewImage(imagePath);
             });
 
             $("button.view-o").click(function() {
@@ -109,36 +132,38 @@
                     folder: $(this).data("folder"),
                     image: $(this).data("image")
                 };
-                viewImageO(imageData);
+                var folderName = imageData.folder;
+                var imageName = imageData.image;
+                var imagePath = "{{ asset('images/') }}" +"/"+ folderName + "/" + imageName;
+                viewImage(imagePath);
             });
         });
 
-        function viewImage(imageData) {
-            var folderName = imageData.folder;
-            var imageName = imageData.image;
-            var imagePath = "{{ asset('images/') }}" +"/"+ folderName + "/m_" + imageName;
+        function viewImage(imagePath) {
+            
             console.log(imagePath);
             var imageWindow = window.open("", "_blank");
             imageWindow.document.write('<img src="' + imagePath + '" alt="Image" style="width: auto; height: auto; max-width: 100%; max-height: 100%;">');
+
+            // $('#imageModal').find('.modal-body img').attr('src', imagePath);
+            // $('#imageModal').modal('show');
+
+
         }
 
-        function viewImageL(imageData) {
-            var folderName = imageData.folder;
-            var imageName = imageData.image;
-            var imagePath = "{{ asset('images/') }}" +"/"+ folderName + "/l_" + imageName;
-            console.log(imagePath);
-            var imageWindow = window.open("", "_blank");
-            imageWindow.document.write('<img src="' + imagePath + '" alt="Image" style="width: auto; height: auto; max-width: 100%; max-height: 100%;">');
-        }
+        // function viewImageL(imagePath) {
+            
+        //     console.log('large',imagePath);
+        //     var imageWindow = window.open("", "_blank");
+        //     imageWindow.document.write('<img src="' + imagePath + '" alt="Image" style="width: auto; height: auto; max-width: 100%; max-height: 100%;">');
+        // }
 
-        function viewImageO(imageData) {
-            var folderName = imageData.folder;
-            var imageName = imageData.image;
-            var imagePath = "{{ asset('images/') }}" +"/"+ folderName + "/" + imageName;
-            console.log(imagePath);
-            var imageWindow = window.open("", "_blank");
-            imageWindow.document.write('<img src="' + imagePath + '" alt="Image" style="width: auto; height: auto; max-width: 100%; max-height: 100%;">');
-        }
+        // function viewImageO(imagePath) {
+            
+        //     console.log('original',imagePath);
+        //     var imageWindow = window.open("", "_blank");
+        //     imageWindow.document.write('<img src="' + imagePath + '" alt="Image" style="width: auto; height: auto; max-width: 100%; max-height: 100%;">');
+        // }
 
     // $(document).ready(function() {
     //     $("button.view-m").click(function() {
