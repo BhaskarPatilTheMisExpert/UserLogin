@@ -27,4 +27,4 @@ Route::get('uploadImg',[ImageController::class, 'uploadImag'])->name('uploadImg'
 Route::get('imageUploadSave',[ImageController::class, 'imageUploadSave'])->name('imageUploadSave');
 Route::get('showImg',[ImageController::class, 'showImg'])->name('showImg');
 Route::get('viewImage',[ImageController::class, 'viewImage'])->name('viewImage');
-
+Route::get('dashboard',[ImageController::class, 'dashboard'])->name('dashboard');

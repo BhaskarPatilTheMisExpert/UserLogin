@@ -7,6 +7,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\OtpMail;
 use DB;
+use App\Http\Controllers\Crypt;
+
 class loginController extends Controller
 {
     //
@@ -47,19 +49,19 @@ class loginController extends Controller
      $email = $request->input('email');
      $otp = $request->input('password');
 
-     $updateStats = DB::table('otp_table')->where([
-                                ['status', '=', 'active'],
-                                ['expire_time', '<=', Carbon::now()]
-                                 ])->update(['status' => 'inactive']);
+     // $updateStats = DB::table('otp_table')->where([
+     //                            ['status', '=', 'A'],
+     //                            ['expire_time', '<=', Carbon::now()]
+     //                             ])->update(['status' => 'I']);
      $emailExists = \DB::table('users')->where('email', $email)->get();
-
+     // $decrypt= Crypt::decrypt($emailExists->password);  
      // dd($emailExists);
      if ($emailExists->isEmpty()) {
         $message = "Invalid credentials";
         return view('login',compact('message'));
     }
        // dd($emailExists[0]);
-     $otpUser = \DB::table('otp_table')->where('user_id', $email)->latest('created_at')->first();
+     $otpUser = \DB::table('otp')->where('user_id', $email)->latest('created_at')->first();
 
         if ($emailExists) {
               //for password login

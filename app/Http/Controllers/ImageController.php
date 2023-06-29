@@ -28,7 +28,7 @@ class ImageController extends Controller
         $latestFolderNumber = $latestFolder ? $latestFolder->id + 1 : 1;
         $folderName = (string) $latestFolderNumber;
 
-        
+
         //folder name as string
         // $folderName = Str::random(10);
         // dd($folderName);
@@ -98,5 +98,10 @@ class ImageController extends Controller
 
          
          return response()->json('ramesh');
+    }
+
+    public function dashboard()
+    {
+        return view('dashboard');
     }
 }
