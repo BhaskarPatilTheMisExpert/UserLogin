@@ -28,3 +28,6 @@ Route::get('imageUploadSave',[ImageController::class, 'imageUploadSave'])->name(
 Route::get('showImg',[ImageController::class, 'showImg'])->name('showImg');
 Route::get('viewImage',[ImageController::class, 'viewImage'])->name('viewImage');
 Route::get('dashboard',[ImageController::class, 'dashboard'])->name('dashboard');
+Route::get('/test/sop',[ImageController::class, 'testSop']);
+
+

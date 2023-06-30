@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Images;
 use DB;
 use Illuminate\Support\Str;
+use Office365\Runtime\Auth\UserCredentials;
+use Office365\SharePoint\ClientContext;
+use Office365\SharePoint\File;
 
 
 class ImageController extends Controller
@@ -103,5 +106,20 @@ class ImageController extends Controller
     public function dashboard()
     {
         return view('dashboard');
+    }
+
+    public function testSop()
+    {
+        echo "test";
+        $credentials = new UserCredentials("wsita.support@piramal.com", "Expert@11");
+        $ctx = (new ClientContext("https://mypiramal-my.sharepoint.com/"))->withCredentials($credentials);
+
+        $localFilePath = public_path()."/sop.docx";
+        $targetFileUrl = "testing-Documents/sop.docx";
+        $fileContent = file_get_contents($localFilePath);
+        File::saveBinary($ctx,$targetFileUrl,$fileContent);
+        print "File has been uploaded\r\n";
+        
+        exit;
     }
 }
